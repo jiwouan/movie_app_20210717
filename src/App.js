@@ -1,53 +1,53 @@
+import axios from "axios";
 import React from "react";
+import Movie from "./Movie";
+import './App.css';
 
-function Food({name, picture}) {
-  return (
-    <div>
-      <h2> like {name}</h2>
-      <img src={picture} alt={name} />
-    </div>
-  );
-}
+class App extends React.Component {
+  state = {
+    isLoading: true,
+    movies: [],
+  };
 
-const foodILike =[
-  {
-    id: 1,
-    name: 'Kimchi',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI5zbitDmSr5pOFWiP3qnAhv04pAe-pi1gvA&usqp=CAU'
-  },
-  {
-    id:2,
-    name: 'Samgyeopsal',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmPbFhWQxUlVOn3z0GXbprWSrlN-eTtxy-XA&usqp=CAU'
-  },
-  {
-    id:3,
-    name:'Bibimbap',
-    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk8TgzcEGvR9rAOG8unUUaLnKWwyzRgIl5ew&usqp=CAU'
-  },
-  {
-    id:4,
-    name:'Doncasu',
-    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVecIPObOrlhha3phjqGB4cH6yNVEh6_FuwY5tC_gWopcIUHVonh1vVkl6Ao-0fVukcs4&usqp=CAU'
-  },
-  {
-    id:5,
-    name:'Kimbap',
-    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpZ7JhEx6mwZ86gmYiCGmLxce3_R31-3MOfg&usqp=CAU'
+  getMovies = async () => {
+    const {
+      data : {
+        data: {movies}
+      }
+    } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');
+    this.setState({movies, isLoading: false});
   }
-];
 
-const renderFood= dish => <Food key={dish.name} name={dish.name} picture={dish.image} />;
+  componentDidMount() {
+    this.getMovies();
+  }
 
-
-function App() {
-  console.log(foodILike.map(renderFood));
-  return (
-    <div> 
-      {foodILike.map(renderFood)}
-    </div>
-  );
-}
-
+ render() {
+    const {isLoading, movies} = this.state;
+    return (
+       <section className='container'>
+         {isLoading ? (
+          <div className='loader'>
+            <span className='loader__text'>Loading</span>
+          </div>
+        ) : (
+          <div className='movies'>
+            {movies.map(movie => (
+              <Movie 
+                 key={movie.id}
+                 id={movie.id}
+                 year={movie.year}
+                 title={movie.title}
+                 summary={movie.summary}
+                 poster={movie.medium_cover_image}
+                 genres={movie.genres}
+               />
+             ))}
+           </div>
+         )}
+       </section> 
+     );
+   }
+  }
 
 export default App;
