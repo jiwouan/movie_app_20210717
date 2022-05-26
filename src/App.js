@@ -1,7 +1,7 @@
 import React from 'react';
 //import Home from './routes/home';
 import './App.css';
-import {HashRouter, Routes, Route} from 'react-router-dom'
+import {HashRouter, Routes, Route} from 'react-router-dom';
 import About from './routes/About';
 import Home from './routes/Home';
 import Navigation from './components/Navigation';
